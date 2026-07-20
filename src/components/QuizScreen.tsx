@@ -63,9 +63,10 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
     setIsSubmitted(true);
     setShowScoreModal(true);
 
-    const totalScore = calculateScore();
-    // Trigger celebratory sound & confetti on submission if score is 5 or more!
-    if (totalScore >= 5) {
+    const correctCount = calculateScore();
+    const gradeValue = correctCount * 0.5;
+    // Trigger celebratory sound & confetti on submission if grade is 5.0 or more!
+    if (gradeValue >= 5) {
       audioSynth.playSuccess();
       confetti({
         particleCount: 150,
@@ -87,16 +88,17 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
   };
 
   const score = calculateScore();
+  const grade = score * 0.5;
 
   // Review status
-  const getFeedbackMessage = (scoreValue: number) => {
+  const getFeedbackMessage = (gradeValue: number) => {
     const answeredCount = Object.keys(answers).length;
     if (answeredCount < selectedQuestions.length) {
       return "Bạn nhận điểm 0 do chưa hoàn thành đầy đủ tất cả các câu hỏi của bài kiểm tra.";
     }
-    if (scoreValue >= 9) return "Xuất sắc! Bạn nắm kiến thức hữu cơ cực tốt.";
-    if (scoreValue >= 7) return "Khá giỏi! Tiếp tục phát huy nhé.";
-    if (scoreValue >= 5) return "Đạt yêu cầu. Hãy ôn tập kỹ hơn.";
+    if (gradeValue >= 9) return "Xuất sắc! Bạn nắm kiến thức hữu cơ cực tốt.";
+    if (gradeValue >= 7) return "Khá giỏi! Tiếp tục phát huy nhé.";
+    if (gradeValue >= 5) return "Đạt yêu cầu. Hãy ôn tập kỹ hơn.";
     return "Cần cố gắng thêm! Xem lại SGK Hoá học 12 nhé.";
   };
 
@@ -358,17 +360,21 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
                 <span className="text-slate-500 font-semibold">Bài học:</span>
                 <span className="text-slate-900 font-bold truncate max-w-[200px]">{lessonName}</span>
               </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-500 font-semibold">Số câu đúng:</span>
+                <span className="text-slate-900 font-bold">{score} / {selectedQuestions.length}</span>
+              </div>
               <div className="border-t border-slate-200 pt-3 flex justify-between items-center mt-3">
                 <span className="text-slate-700 font-bold text-base">Điểm kiểm tra:</span>
                 <span className="text-4xl font-black text-[#d4af37]">
-                  {score} / {selectedQuestions.length}
+                  {grade.toFixed(1).replace('.0', '')} / 10
                 </span>
               </div>
             </div>
 
             {/* Personalized feedback */}
             <p className="text-slate-800 font-semibold text-base mb-6 px-2">
-              {getFeedbackMessage(score)}
+              {getFeedbackMessage(grade)}
             </p>
 
             {/* Action buttons inside Modal */}

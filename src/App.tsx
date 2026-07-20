@@ -43,14 +43,16 @@ export default function App() {
 
     const sourceQs = questions.length > 0 ? questions : (questionBank["Bài 1: Ester – Lipid"] || []);
     
-    // Select exactly 12 "hieu" questions and 5 "vandung" questions
+    // Select exactly 5 "biet", 12 "hieu" questions, and 3 "vandung" questions
+    const bietQs = sourceQs.filter(q => q.level === 'biet');
     const hieuQs = sourceQs.filter(q => q.level === 'hieu');
     const vandungQs = sourceQs.filter(q => q.level === 'vandung');
     
+    const pickedBiet = shuffleAndPick(bietQs, 5);
     const pickedHieu = shuffleAndPick(hieuQs, 12);
-    const pickedVandung = shuffleAndPick(vandungQs, 5);
+    const pickedVandung = shuffleAndPick(vandungQs, 3);
     
-    const combined = [...pickedHieu, ...pickedVandung];
+    const combined = [...pickedBiet, ...pickedHieu, ...pickedVandung];
     const finalQuestions = shuffleAndPick(combined, combined.length);
 
     setCurrentQuestions(finalQuestions);
@@ -61,13 +63,15 @@ export default function App() {
     const questions = questionBank[selectedLesson] || [];
     const sourceQs = questions.length > 0 ? questions : (questionBank["Bài 1: Ester – Lipid"] || []);
     
+    const bietQs = sourceQs.filter(q => q.level === 'biet');
     const hieuQs = sourceQs.filter(q => q.level === 'hieu');
     const vandungQs = sourceQs.filter(q => q.level === 'vandung');
     
+    const pickedBiet = shuffleAndPick(bietQs, 5);
     const pickedHieu = shuffleAndPick(hieuQs, 12);
-    const pickedVandung = shuffleAndPick(vandungQs, 5);
+    const pickedVandung = shuffleAndPick(vandungQs, 3);
     
-    const combined = [...pickedHieu, ...pickedVandung];
+    const combined = [...pickedBiet, ...pickedHieu, ...pickedVandung];
     const finalQuestions = shuffleAndPick(combined, combined.length);
     
     setCurrentQuestions(finalQuestions);
@@ -83,7 +87,7 @@ export default function App() {
       {/* Toast alert if utilizing fallback questions */}
       {currentPage === GamePage.Quiz && usingFallback && (
         <div className="mb-4 p-3 bg-amber-50 border border-amber-200 text-amber-800 text-xs sm:text-sm font-semibold rounded-xl text-center shadow-sm animate-pulse">
-          💡 Bài học này đang trống dữ liệu câu hỏi. Hệ thống tự động bốc ngẫu nhiên 10 câu thuộc <span className="underline">Bài 1: Ester – Lipid</span> để thầy cô thử nghiệm tính năng!
+          💡 Bài học này đang trống dữ liệu câu hỏi. Hệ thống tự động bốc ngẫu nhiên 20 câu thuộc <span className="underline">Bài 1: Ester – Lipid</span> để thầy cô thử nghiệm tính năng!
         </div>
       )}
 
