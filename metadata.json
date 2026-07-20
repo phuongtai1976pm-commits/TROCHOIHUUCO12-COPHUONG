@@ -1,0 +1,6 @@
+{
+  "name": "Ôn tập Hữu cơ Hóa 12",
+  "description": "Ứng dụng trắc nghiệm ôn tập kiến thức Hóa học hữu cơ lớp 12 theo chương trình Sách giáo khoa mới (Kết nối tri thức) với giao diện phiếu kiểm tra và âm thanh trực quan.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
