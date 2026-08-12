@@ -8,7 +8,8 @@ import confetti from 'canvas-confetti';
 import { Question, UserInfo } from '../types';
 import { audioSynth } from '../utils/audio';
 import { MathText } from './MathText';
-import { ArrowLeft, RotateCcw, Check, Sparkles, LogOut, FileText } from 'lucide-react';
+import { getQuestionExplanation } from '../utils/explanations';
+import { ArrowLeft, RotateCcw, Check, Sparkles, LogOut, FileText, Lightbulb, HelpCircle } from 'lucide-react';
 
 interface QuizScreenProps {
   userInfo: UserInfo;
@@ -25,6 +26,14 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
   const [showAnswers, setShowAnswers] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [showConfirmSubmitModal, setShowConfirmSubmitModal] = useState(false);
+  const [expandedExplanations, setExpandedExplanations] = useState<{ [key: number]: boolean }>({});
+
+  const toggleExplanation = (index: number) => {
+    setExpandedExplanations(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
 
   const handleSelectOption = (qIndex: number, optionIndex: number) => {
     if (isSubmitted) return; // Prevent change after scoring
@@ -206,6 +215,34 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
                     );
                   })}
                 </div>
+
+                {/* Explanation Section - Only visible AFTER submitting and clicking "Kiểm tra chi tiết đáp án" */}
+                {showAnswers && (
+                  <div className="mt-3 pt-2 border-t border-slate-100 w-full animate-fade-in">
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => toggleExplanation(qIdx)}
+                        className="text-xs sm:text-sm font-bold text-[#1e3a8a] hover:text-[#d4af37] flex items-center gap-1.5 transition-colors cursor-pointer py-1"
+                      >
+                        <Lightbulb className="w-4 h-4 text-[#d4af37]" />
+                        {expandedExplanations[qIdx] === false ? '💡 Xem hướng dẫn giải / Giải thích' : 'Ẩn hướng dẫn giải'}
+                      </button>
+                    </div>
+
+                    {expandedExplanations[qIdx] !== false && (
+                      <div className="mt-2.5 p-4 rounded-xl bg-amber-50/90 border border-amber-200 text-slate-800 shadow-sm animate-fade-in">
+                        <div className="flex items-center gap-2 font-bold text-amber-900 text-sm mb-2 pb-1.5 border-b border-amber-200/60">
+                          <Sparkles className="w-4 h-4 text-[#d4af37]" />
+                          <span>Hướng dẫn giải &amp; Giải thích chi tiết:</span>
+                        </div>
+                        <div className="text-sm leading-relaxed text-slate-800 font-sans">
+                          <MathText text={getQuestionExplanation(q)} />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               {/* Dashed bubble choice indicator on the right */}
@@ -264,6 +301,7 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
                 setAnswers({});
                 setIsSubmitted(false);
                 setShowAnswers(false);
+                setExpandedExplanations({});
                 onRetake();
               }}
               className="w-full sm:w-auto px-6 py-3.5 rounded-lg font-bold bg-[#1e3a8a] hover:bg-[#152e6f] text-white shadow-md active:scale-95 transition-all text-center tracking-wide uppercase cursor-pointer"
