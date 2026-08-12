@@ -3,11 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { Question, UserInfo } from '../types';
 import { audioSynth } from '../utils/audio';
-import { triggerMathJax } from '../utils/mathjax';
+import { MathText } from './MathText';
 import { ArrowLeft, RotateCcw, Check, Sparkles, LogOut, FileText } from 'lucide-react';
 
 interface QuizScreenProps {
@@ -25,11 +25,6 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
   const [showAnswers, setShowAnswers] = useState(false);
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [showConfirmSubmitModal, setShowConfirmSubmitModal] = useState(false);
-
-  // Trigger MathJax rendering when component mounts or questions are randomized
-  useEffect(() => {
-    triggerMathJax();
-  }, [selectedQuestions]);
 
   const handleSelectOption = (qIndex: number, optionIndex: number) => {
     if (isSubmitted) return; // Prevent change after scoring
@@ -162,7 +157,7 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
               <div className="flex-grow space-y-4">
                 {/* Question Text */}
                 <h3 className="text-xl font-bold text-[#0f172a] leading-snug">
-                  Câu {qIdx + 1}. <span className="tex2jax_process">{q.question}</span>
+                  Câu {qIdx + 1}. <MathText text={q.question} />
                 </h3>
 
                 {/* Options Grid */}
@@ -206,7 +201,7 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
                         `}>
                           {getOptionLetter(oIdx)}
                         </span>
-                        <span className="tex2jax_process">{opt}</span>
+                        <MathText text={opt} />
                       </button>
                     );
                   })}

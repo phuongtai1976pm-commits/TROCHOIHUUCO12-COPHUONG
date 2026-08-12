@@ -12,6 +12,23 @@ import LoginScreen from './components/LoginScreen';
 import ChapterSelectionScreen from './components/ChapterSelectionScreen';
 import QuizScreen from './components/QuizScreen';
 
+// Helper to shuffle options inside a question while keeping correct answer index accurate
+function shuffleQuestionOptions(q: Question): Question {
+  const optionsWithIndex = q.options.map((opt, idx) => ({
+    opt,
+    isCorrect: idx === q.correct
+  }));
+  for (let i = optionsWithIndex.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [optionsWithIndex[i], optionsWithIndex[j]] = [optionsWithIndex[j], optionsWithIndex[i]];
+  }
+  return {
+    ...q,
+    options: optionsWithIndex.map(o => o.opt),
+    correct: optionsWithIndex.findIndex(o => o.isCorrect)
+  };
+}
+
 // Helper to shuffle and pick N items
 function shuffleAndPick(array: Question[], count: number): Question[] {
   const shuffled = [...array];
@@ -20,6 +37,25 @@ function shuffleAndPick(array: Question[], count: number): Question[] {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled.slice(0, count);
+}
+
+function generateQuizQuestions(lessonName: string): Question[] {
+  const questions = questionBank[lessonName] || [];
+  const sourceQs = questions.length > 0 ? questions : (questionBank["Bài 1: Ester – Lipid"] || []);
+  
+  const bietQs = sourceQs.filter(q => q.level === 'biet');
+  const hieuQs = sourceQs.filter(q => q.level === 'hieu');
+  const vandungQs = sourceQs.filter(q => q.level === 'vandung');
+  
+  const pickedBiet = shuffleAndPick(bietQs, 5);
+  const pickedHieu = shuffleAndPick(hieuQs, 12);
+  const pickedVandung = shuffleAndPick(vandungQs, 3);
+  
+  const combined = [...pickedBiet, ...pickedHieu, ...pickedVandung];
+  const finalQuestions = shuffleAndPick(combined, combined.length);
+  
+  // Shuffle options for every selected question
+  return finalQuestions.map(shuffleQuestionOptions);
 }
 
 export default function App() {
@@ -37,43 +73,16 @@ export default function App() {
   const handleSelectLesson = (lessonName: string) => {
     setSelectedLesson(lessonName);
     
-    // Retrieve questions for this lesson
     const questions = questionBank[lessonName] || [];
     setUsingFallback(questions.length === 0);
 
-    const sourceQs = questions.length > 0 ? questions : (questionBank["Bài 1: Ester – Lipid"] || []);
-    
-    // Select exactly 5 "biet", 12 "hieu" questions, and 3 "vandung" questions
-    const bietQs = sourceQs.filter(q => q.level === 'biet');
-    const hieuQs = sourceQs.filter(q => q.level === 'hieu');
-    const vandungQs = sourceQs.filter(q => q.level === 'vandung');
-    
-    const pickedBiet = shuffleAndPick(bietQs, 5);
-    const pickedHieu = shuffleAndPick(hieuQs, 12);
-    const pickedVandung = shuffleAndPick(vandungQs, 3);
-    
-    const combined = [...pickedBiet, ...pickedHieu, ...pickedVandung];
-    const finalQuestions = shuffleAndPick(combined, combined.length);
-
+    const finalQuestions = generateQuizQuestions(lessonName);
     setCurrentQuestions(finalQuestions);
     setCurrentPage(GamePage.Quiz);
   };
 
   const handleRetake = () => {
-    const questions = questionBank[selectedLesson] || [];
-    const sourceQs = questions.length > 0 ? questions : (questionBank["Bài 1: Ester – Lipid"] || []);
-    
-    const bietQs = sourceQs.filter(q => q.level === 'biet');
-    const hieuQs = sourceQs.filter(q => q.level === 'hieu');
-    const vandungQs = sourceQs.filter(q => q.level === 'vandung');
-    
-    const pickedBiet = shuffleAndPick(bietQs, 5);
-    const pickedHieu = shuffleAndPick(hieuQs, 12);
-    const pickedVandung = shuffleAndPick(vandungQs, 3);
-    
-    const combined = [...pickedBiet, ...pickedHieu, ...pickedVandung];
-    const finalQuestions = shuffleAndPick(combined, combined.length);
-    
+    const finalQuestions = generateQuizQuestions(selectedLesson);
     setCurrentQuestions(finalQuestions);
   };
 
