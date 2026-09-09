@@ -198,7 +198,9 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
                         onClick={() => handleSelectOption(qIdx, oIdx)}
                         className={`w-full text-left px-4 py-3 rounded-lg border transition-all text-sm sm:text-base flex items-center gap-3 focus:outline-none ${btnStyle}`}
                       >
-                        <span className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shrink-0 border
+                        <span 
+                          translate="no"
+                          className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-sm shrink-0 border notranslate
                           ${isSelected 
                             ? showAnswers
                               ? isCorrect
@@ -248,7 +250,8 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
               {/* Dashed bubble choice indicator on the right */}
               <div className="shrink-0 flex items-center justify-center self-center sm:self-start">
                 <div 
-                  className={`border-[2.5px] border-dashed rounded-full w-12 h-16 flex flex-col items-center justify-center select-none shadow-sm transition-all duration-300
+                  translate="no"
+                  className={`border-[2.5px] border-dashed rounded-full w-12 h-16 flex flex-col items-center justify-center select-none shadow-sm transition-all duration-300 notranslate
                     ${
                       showAnswers
                         ? isCorrect
@@ -260,8 +263,8 @@ export default function QuizScreen({ userInfo, lessonName, selectedQuestions, on
                     }
                   `}
                 >
-                  <span className="text-xs font-bold font-sans opacity-70">Ý</span>
-                  <span className="text-lg font-black tracking-tighter">
+                  <span className="text-xs font-bold font-sans opacity-70 notranslate" translate="no">Ý</span>
+                  <span className="text-lg font-black tracking-tighter notranslate" translate="no">
                     {hasAnswered ? getOptionLetter(selectedOption) : "?"}
                   </span>
                 </div>

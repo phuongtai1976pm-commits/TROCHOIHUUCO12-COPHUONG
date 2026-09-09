@@ -50,11 +50,13 @@ export const MathText: React.FC<MathTextProps> = ({ text, className = '' }) => {
           return (
             <span
               key={index}
+              className="notranslate"
+              translate="no"
               dangerouslySetInnerHTML={{ __html: html }}
             />
           );
         } catch {
-          return <span key={index}>{part}</span>;
+          return <span key={index} className="notranslate" translate="no">{part}</span>;
         }
       }
 
@@ -62,7 +64,7 @@ export const MathText: React.FC<MathTextProps> = ({ text, className = '' }) => {
     });
   }, [text]);
 
-  return <span className={`math-text inline ${className}`}>{renderedElements}</span>;
+  return <span className={`math-text inline notranslate ${className}`} translate="no">{renderedElements}</span>;
 };
 
 export default MathText;
